@@ -21,13 +21,13 @@ public class OrderBoardTest {
     }
 
     private void addOrders() {
-        orderBoard.registerOrder(new OrderImpl(OrderType.BUY, new BigDecimal("303"), new BigDecimal("3.5"), "userId1"));
-        orderBoard.registerOrder(new OrderImpl(OrderType.SELL, new BigDecimal("306"), new BigDecimal("7.5"), "userId2"));
-        orderBoard.registerOrder(new OrderImpl(OrderType.BUY, new BigDecimal("303"), new BigDecimal("3.0"), "userId3"));
-        orderBoard.registerOrder(new OrderImpl(OrderType.SELL, new BigDecimal("301"), new BigDecimal("5.5"), "userId4"));
-        orderBoard.registerOrder(new OrderImpl(OrderType.SELL, new BigDecimal("303"), new BigDecimal("3.0"), "userId3"));
-        orderBoard.registerOrder(new OrderImpl(OrderType.BUY, new BigDecimal("303"), new BigDecimal("1.5"), "userId4"));
-        orderBoard.registerOrder(new OrderImpl(OrderType.BUY, new BigDecimal("304"), new BigDecimal("1.0"), "userId5"));
+        orderBoard.registerOrder(OrderBoardFactory.INSTANCE.createOrder(OrderType.BUY, new BigDecimal("303"), new BigDecimal("3.5"), "userId1"));
+        orderBoard.registerOrder(OrderBoardFactory.INSTANCE.createOrder(OrderType.SELL, new BigDecimal("306"), new BigDecimal("7.5"), "userId2"));
+        orderBoard.registerOrder(OrderBoardFactory.INSTANCE.createOrder(OrderType.BUY, new BigDecimal("303"), new BigDecimal("3.0"), "userId3"));
+        orderBoard.registerOrder(OrderBoardFactory.INSTANCE.createOrder(OrderType.SELL, new BigDecimal("301"), new BigDecimal("5.5"), "userId4"));
+        orderBoard.registerOrder(OrderBoardFactory.INSTANCE.createOrder(OrderType.SELL, new BigDecimal("303"), new BigDecimal("3.0"), "userId3"));
+        orderBoard.registerOrder(OrderBoardFactory.INSTANCE.createOrder(OrderType.BUY, new BigDecimal("303"), new BigDecimal("1.5"), "userId4"));
+        orderBoard.registerOrder(OrderBoardFactory.INSTANCE.createOrder(OrderType.BUY, new BigDecimal("304"), new BigDecimal("1.0"), "userId5"));
     }
 
     @Test
@@ -48,8 +48,8 @@ public class OrderBoardTest {
 
     @Test
     public void testGetOrderBookSummaryCancelOrders() {
-        orderBoard.cancelOrder(new OrderImpl(OrderType.BUY, new BigDecimal("303"), new BigDecimal("3.0"), "userId3"));
-        orderBoard.cancelOrder(new OrderImpl(OrderType.SELL, new BigDecimal("303"), new BigDecimal("3.0"), "userId6"));
+        orderBoard.cancelOrder(OrderBoardFactory.INSTANCE.createOrder(OrderType.BUY, new BigDecimal("303"), new BigDecimal("3.0"), "userId3"));
+        orderBoard.cancelOrder(OrderBoardFactory.INSTANCE.createOrder(OrderType.SELL, new BigDecimal("303"), new BigDecimal("3.0"), "userId6"));
         OrderBook orderBook = orderBoard.getOrderBoardSummary();
         List<OrderBookItem> orderBookItems = orderBook.getOrderBookItems(OrderType.BUY);
         assertNotNull(orderBookItems);
