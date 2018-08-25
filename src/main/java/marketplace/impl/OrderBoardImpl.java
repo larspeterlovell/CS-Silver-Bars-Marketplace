@@ -7,8 +7,8 @@ import java.util.*;
 
 public class OrderBoardImpl implements OrderBoard {
 
-    private final Map<BigDecimal, List<Order>> price2BuyOrders = new TreeMap<>();
-    private final Map<BigDecimal, List<Order>> price2SellOrders = new TreeMap<>();
+    private final SortedMap<BigDecimal, List<Order>> price2BuyOrders = new TreeMap<>();
+    private final SortedMap<BigDecimal, List<Order>> price2SellOrders = new TreeMap<>();
 
     @Override
     public synchronized void registerOrder(Order order) {
@@ -53,20 +53,18 @@ public class OrderBoardImpl implements OrderBoard {
         if (orderType == null) {
             throw new IllegalArgumentException("Input order type is null when getting order book items");
         }
-        Map<BigDecimal, List<Order>> price2Orders = getPrice2Orders(orderType);
+        SortedMap<BigDecimal, List<Order>> price2Orders = getPrice2Orders(orderType);
         List<OrderBookItem> orderBookItemList = new ArrayList<>();
+
         for (BigDecimal price : price2Orders.keySet()) {
-            BigDecimal totalQty = BigDecimal.ZERO;
             List<Order> orders = price2Orders.get(price);
-            for (Order order : orders) {
-                totalQty = totalQty.add(order.getQty());
-            }
+            BigDecimal totalQty = orders.stream().map(order -> order.getQty()).reduce(BigDecimal.ZERO, BigDecimal::add);
             orderBookItemList.add(new OrderBookItemImpl(price, totalQty));
         }
         return orderBookItemList;
     }
 
-    private Map<BigDecimal, List<Order>> getPrice2Orders(OrderType orderType) {
+    private SortedMap<BigDecimal, List<Order>> getPrice2Orders(OrderType orderType) {
         if (orderType == null) {
             throw new IllegalArgumentException("Input order type is null when price to order list map");
         }
