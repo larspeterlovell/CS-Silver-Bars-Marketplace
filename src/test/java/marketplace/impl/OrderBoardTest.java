@@ -1,9 +1,6 @@
 package marketplace.impl;
 
-import marketplace.OrderBoard;
-import marketplace.OrderBook;
-import marketplace.OrderBookItem;
-import marketplace.OrderType;
+import marketplace.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,7 +16,7 @@ public class OrderBoardTest {
 
     @Before
     public void setup() {
-        orderBoard = new OrderBoardImpl();
+        orderBoard = OrderBoardFactory.INSTANCE.createOrderBoard();
         addOrders();
     }
 

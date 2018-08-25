@@ -1,10 +1,7 @@
 package marketplace;
 
-import marketplace.impl.OrderBoardImpl;
-
 public interface OrderBoard {
 
-    static final OrderBoard INSTANCE = new OrderBoardImpl();
     /**
      * Register an order
      *
