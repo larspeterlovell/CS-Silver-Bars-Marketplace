@@ -27,7 +27,7 @@ public class OrderBoardImplTest {
     }
 
     @Test
-    public void testGetOrderBookSummaryRegisteredOrders() {
+    public void testGetOrderBookRegisteredOrders() {
         orderBoard.registerOrder(new OrderImpl(OrderType.BUY, new BigDecimal("303"), new BigDecimal("3.5"), "userId1"));
         orderBoard.registerOrder(new OrderImpl(OrderType.SELL, new BigDecimal("306"), new BigDecimal("7.5"), "userId2"));
         orderBoard.registerOrder(new OrderImpl(OrderType.BUY, new BigDecimal("303"), new BigDecimal("3.0"), "userId3"));
@@ -35,7 +35,7 @@ public class OrderBoardImplTest {
         orderBoard.registerOrder(new OrderImpl(OrderType.SELL, new BigDecimal("303"), new BigDecimal("3.0"), "userId3"));
         orderBoard.registerOrder(new OrderImpl(OrderType.BUY, new BigDecimal("303"), new BigDecimal("1.5"), "userId4"));
         orderBoard.registerOrder(new OrderImpl(OrderType.BUY, new BigDecimal("304"), new BigDecimal("1.0"), "userId5"));
-        OrderBook orderBook = orderBoard.getOrderBoardSummary();
+        OrderBook orderBook = orderBoard.getOrderBook();
         SortedMap<BigDecimal, BigDecimal> price2TotalQtyBuyOrders = orderBook.getPrice2TotalQtyBuyOrders();
         assertNotNull(price2TotalQtyBuyOrders);
         assertEquals(2, price2TotalQtyBuyOrders.size());
@@ -57,7 +57,7 @@ public class OrderBoardImplTest {
     }
 
     @Test
-    public void testGetOrderBookSummaryCancelOrders() {
+    public void testGetOrderBookCancelOrders() {
         orderBoard.registerOrder(new OrderImpl(OrderType.BUY, new BigDecimal("303"), new BigDecimal("3.5"), "userId1"));
         orderBoard.registerOrder(new OrderImpl(OrderType.SELL, new BigDecimal("306"), new BigDecimal("7.5"), "userId2"));
         orderBoard.registerOrder(new OrderImpl(OrderType.BUY, new BigDecimal("303"), new BigDecimal("3.0"), "userId3"));
@@ -67,7 +67,7 @@ public class OrderBoardImplTest {
         orderBoard.registerOrder(new OrderImpl(OrderType.BUY, new BigDecimal("304"), new BigDecimal("1.0"), "userId5"));
         orderBoard.cancelOrder(new OrderImpl(OrderType.BUY, new BigDecimal("303"), new BigDecimal("3.0"), "userId3"));
         orderBoard.cancelOrder(new OrderImpl(OrderType.SELL, new BigDecimal("303"), new BigDecimal("3.0"), "userId3"));
-        OrderBook orderBook = orderBoard.getOrderBoardSummary();
+        OrderBook orderBook = orderBoard.getOrderBook();
         SortedMap<BigDecimal, BigDecimal> price2TotalQtyBuyOrders = orderBook.getPrice2TotalQtyBuyOrders();
         assertNotNull(price2TotalQtyBuyOrders);
         assertEquals(2, price2TotalQtyBuyOrders.size());
@@ -87,7 +87,7 @@ public class OrderBoardImplTest {
     }
 
     @Test
-    public void testOrderBoardWithMultipleThreads() throws Exception{
+    public void testGetOrderBookWithMultipleThreads() throws Exception{
         final int NO_OF_THREADS_PER_ACTION_TYPE = 10;
         final int TOT_NO_OF_THREADS = NO_OF_THREADS_PER_ACTION_TYPE * 2;
         CountDownLatch allThreadsInitialisedLatch = new CountDownLatch(1);
@@ -117,9 +117,9 @@ public class OrderBoardImplTest {
                 public void run() {
                     try {
                         allThreadsInitialisedLatch.await();
-                        orderBoard.getOrderBoardSummary();
-                        orderBoard.getOrderBoardSummary();
-                        orderBoard.getOrderBoardSummary();
+                        orderBoard.getOrderBook();
+                        orderBoard.getOrderBook();
+                        orderBoard.getOrderBook();
                         allThreadsFinishedLatch.countDown();
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -131,7 +131,7 @@ public class OrderBoardImplTest {
         allThreadsInitialisedLatch.countDown();
         allThreadsFinishedLatch.await();
         // Verify the order book
-        OrderBook orderBook = orderBoard.getOrderBoardSummary();
+        OrderBook orderBook = orderBoard.getOrderBook();
         SortedMap<BigDecimal, BigDecimal> price2QtyBuyOrders = orderBook.getPrice2TotalQtyBuyOrders();
         SortedMap<BigDecimal, BigDecimal> price2QtySellOrders = orderBook.getPrice2TotalQtySellOrders();
         assertNotNull(price2QtyBuyOrders);
@@ -148,6 +148,26 @@ public class OrderBoardImplTest {
             assertTrue(price2QtyIterSellOrders.hasNext());
             assertBulkOrderPrice2QtyEntry(price2QtyIterSellOrders.next(), no);
         }
+    }
+
+    @Test
+    public void testGetSummary() {
+        orderBoard.registerOrder(new OrderImpl(OrderType.BUY, new BigDecimal("303"), new BigDecimal("3.5"), "userId1"));
+        orderBoard.registerOrder(new OrderImpl(OrderType.SELL, new BigDecimal("306"), new BigDecimal("7.5"), "userId2"));
+        orderBoard.registerOrder(new OrderImpl(OrderType.BUY, new BigDecimal("303"), new BigDecimal("3.0"), "userId3"));
+        orderBoard.registerOrder(new OrderImpl(OrderType.SELL, new BigDecimal("301"), new BigDecimal("5.5"), "userId4"));
+        orderBoard.registerOrder(new OrderImpl(OrderType.SELL, new BigDecimal("303"), new BigDecimal("3.0"), "userId3"));
+        orderBoard.registerOrder(new OrderImpl(OrderType.BUY, new BigDecimal("303"), new BigDecimal("1.5"), "userId4"));
+        orderBoard.registerOrder(new OrderImpl(OrderType.BUY, new BigDecimal("304"), new BigDecimal("1.0"), "userId5"));
+        final String EXP_SUMMARY =
+                "BUY:\n" +
+                "1.0 kg for £304\n" +
+                "8.0 kg for £303\n" +
+                "SELL:\n" +
+                "5.5 kg for £301\n" +
+                "3.0 kg for £303\n" +
+                "7.5 kg for £306\n";
+        assertEquals(EXP_SUMMARY, orderBoard.getSummary());
     }
 
     private Order createBulkOrder(OrderType orderType, int no) {

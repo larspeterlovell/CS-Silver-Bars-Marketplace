@@ -22,6 +22,12 @@ public interface OrderBoard {
      *
      * @return an order book holding a price->total qty maps for buy orders and sell orders respectively
      */
-    OrderBook getOrderBoardSummary();
+    OrderBook getOrderBook();
 
+    /**
+     * Get an order board summary as a string
+     *
+     * @return an order book summary on string format
+     */
+    String getSummary();
 }
