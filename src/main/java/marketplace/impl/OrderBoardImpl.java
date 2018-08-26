@@ -36,12 +36,9 @@ public class OrderBoardImpl implements OrderBoard {
 
     @Override
     public OrderBook getOrderBoardSummary() {
-        Stream<Order> orderStream = orders.stream();
-        Order[] orderArray = orderStream.toArray(Order[]::new);
-        Stream<Order> orderStreamBuyOrders = Stream.of(orderArray);
-        NavigableMap<BigDecimal, BigDecimal> price2TotalQtyBuyOrders = getPrice2TotalQty(orderStreamBuyOrders, OrderType.BUY).descendingMap();
-        Stream<Order> orderStreamSellOrders = Stream.of(orderArray);
-        NavigableMap<BigDecimal, BigDecimal> price2TotalQtySellOrders = getPrice2TotalQty(orderStreamSellOrders, OrderType.SELL);
+        Order[] orderArray = orders.stream().toArray(Order[]::new);
+        NavigableMap<BigDecimal, BigDecimal> price2TotalQtyBuyOrders = getPrice2TotalQty(Stream.of(orderArray), OrderType.BUY).descendingMap();
+        NavigableMap<BigDecimal, BigDecimal> price2TotalQtySellOrders = getPrice2TotalQty(Stream.of(orderArray), OrderType.SELL);
         return new OrderBookImpl(price2TotalQtyBuyOrders, price2TotalQtySellOrders);
     }
 
