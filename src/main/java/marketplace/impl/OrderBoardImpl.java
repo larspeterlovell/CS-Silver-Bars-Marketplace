@@ -1,73 +1,54 @@
 package marketplace.impl;
 
-import marketplace.*;
+import marketplace.Order;
+import marketplace.OrderBoard;
+import marketplace.OrderBook;
+import marketplace.OrderType;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Map;
+import java.util.NavigableMap;
+import java.util.Queue;
+import java.util.TreeMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class OrderBoardImpl implements OrderBoard {
 
-    private final SortedMap<BigDecimal, List<Order>> price2BuyOrders = new TreeMap<>();
-    private final SortedMap<BigDecimal, List<Order>> price2SellOrders = new TreeMap<>();
+    private final Queue<Order> orders = new ConcurrentLinkedQueue<>();
 
     @Override
-    public synchronized void registerOrder(Order order) {
+    public void registerOrder(Order order) {
         if (order == null) {
             throw new IllegalArgumentException("Input order is null when registering order");
-        }
-        Map<BigDecimal, List<Order>> price2Orders = getPrice2Orders(order.getOrderType());
-        BigDecimal price = order.getPrice();
-        List<Order> orders = price2Orders.get(price);
-        if (orders == null) {
-            orders = new LinkedList<Order>();
-            price2Orders.put(price, orders);
         }
         orders.add(order);
     }
 
     @Override
-    public synchronized void cancelOrder(Order order) {
+    public boolean cancelOrder(Order order) {
         if (order == null) {
             throw new IllegalArgumentException("Input order is null when cancelling order");
         }
-        Map<BigDecimal, List<Order>> price2Orders = getPrice2Orders(order.getOrderType());
-        BigDecimal price = order.getPrice();
-        List<Order> orders = price2Orders.get(price);
-        if (orders != null) {
-            orders.remove(order);
-            if (orders.isEmpty()) {
-                price2Orders.remove(price);
-            }
-        }
+        return orders.remove(order);
     }
 
     @Override
-    public synchronized OrderBook getOrderBoardSummary() {
-        OrderBookImpl orderBook = new OrderBookImpl();
-        orderBook.add(OrderType.BUY, getOrderBookItems(OrderType.BUY));
-        orderBook.add(OrderType.SELL, getOrderBookItems(OrderType.SELL));
-        return orderBook;
+    public OrderBook getOrderBoardSummary() {
+        Stream<Order> orderStream = orders.stream();
+        Order[] orderArray = orderStream.toArray(Order[]::new);
+        Stream<Order> orderStreamBuyOrders = Stream.of(orderArray);
+        NavigableMap<BigDecimal, BigDecimal> price2TotalQtyBuyOrders = getPrice2TotalQty(orderStreamBuyOrders, OrderType.BUY).descendingMap();
+        Stream<Order> orderStreamSellOrders = Stream.of(orderArray);
+        NavigableMap<BigDecimal, BigDecimal> price2TotalQtySellOrders = getPrice2TotalQty(orderStreamSellOrders, OrderType.SELL);
+        return new OrderBookImpl(price2TotalQtyBuyOrders, price2TotalQtySellOrders);
     }
 
-    private List<OrderBookItem> getOrderBookItems(OrderType orderType) {
-        if (orderType == null) {
-            throw new IllegalArgumentException("Input order type is null when getting order book items");
-        }
-        SortedMap<BigDecimal, List<Order>> price2Orders = getPrice2Orders(orderType);
-        List<OrderBookItem> orderBookItemList = new ArrayList<>();
-
-        for (BigDecimal price : price2Orders.keySet()) {
-            List<Order> orders = price2Orders.get(price);
-            BigDecimal totalQty = orders.stream().map(order -> order.getQty()).reduce(BigDecimal.ZERO, BigDecimal::add);
-            orderBookItemList.add(new OrderBookItemImpl(price, totalQty));
-        }
-        return orderBookItemList;
-    }
-
-    private SortedMap<BigDecimal, List<Order>> getPrice2Orders(OrderType orderType) {
-        if (orderType == null) {
-            throw new IllegalArgumentException("Input order type is null when price to order list map");
-        }
-        return orderType == OrderType.BUY ? price2BuyOrders : price2SellOrders;
+    private NavigableMap<BigDecimal, BigDecimal> getPrice2TotalQty(Stream<Order> stream, OrderType orderType) {
+        Map<BigDecimal, BigDecimal> map = stream.filter(order -> orderType == order.getOrderType()).collect(
+                Collectors.groupingBy(Order::getPrice, Collectors.mapping(Order::getQty,
+                        Collectors.reducing(BigDecimal.ZERO, BigDecimal::add))));
+        return new TreeMap<>(map);
     }
 }

@@ -13,14 +13,14 @@ public interface OrderBoard {
      * Cancel an order
      *
      * @param order
+     * @return true if order was found and cancelled, false otherwise
      */
-    void cancelOrder(Order order);
+    boolean cancelOrder(Order order);
 
     /**
-     * Get an order board summary as an order book
+     * Get an order board summary as an order book object
      *
-     * @return an order book holding a sorted list for buy order book items
-     * and a sorted list for sell order book items
+     * @return an order book holding a price->total qty maps for buy orders and sell orders respectively
      */
     OrderBook getOrderBoardSummary();
 

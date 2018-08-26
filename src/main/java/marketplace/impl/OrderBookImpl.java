@@ -1,38 +1,27 @@
 package marketplace.impl;
 
 import marketplace.OrderBook;
-import marketplace.OrderBookItem;
-import marketplace.OrderType;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.util.SortedMap;
 
 public class OrderBookImpl implements OrderBook {
 
-    private final Map<OrderType, List<OrderBookItem>> orderType2OrderBookItems;
+    private final SortedMap<BigDecimal, BigDecimal> price2TotalQtyBuyOrders;
+    private final SortedMap<BigDecimal, BigDecimal> price2TotalQtySellOrders;
 
-    public OrderBookImpl() {
-        orderType2OrderBookItems = new HashMap<>();
-        orderType2OrderBookItems.put(OrderType.BUY, new LinkedList<>());
-        orderType2OrderBookItems.put(OrderType.SELL, new LinkedList<>());
+    public OrderBookImpl(SortedMap<BigDecimal, BigDecimal> price2TotalQtyBuyOrders, SortedMap<BigDecimal, BigDecimal> price2TotalQtySellOrders) {
+        this.price2TotalQtyBuyOrders = price2TotalQtyBuyOrders;
+        this.price2TotalQtySellOrders = price2TotalQtySellOrders;
     }
 
     @Override
-    public List<OrderBookItem> getOrderBookItems(OrderType orderType) {
-        if (orderType == null) {
-            throw new IllegalArgumentException("Input order type is null when getting order book items");
-        }
-        return orderType2OrderBookItems.get(orderType);
+    public SortedMap<BigDecimal, BigDecimal> getPrice2TotalQtyBuyOrders() {
+        return price2TotalQtyBuyOrders;
     }
 
-    protected void add(OrderType orderType, List<OrderBookItem> orderBookItems) {
-        if (orderType == null || orderBookItems == null) {
-            throw new IllegalArgumentException("Input order type or order book items is null when adding order book items");
-        }
-        List<OrderBookItem> existingOrderBookItems = getOrderBookItems(orderType);
-        existingOrderBookItems.addAll(orderBookItems);
+    @Override
+    public SortedMap<BigDecimal, BigDecimal> getPrice2TotalQtySellOrders() {
+        return price2TotalQtySellOrders;
     }
-
 }
