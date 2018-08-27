@@ -5,6 +5,9 @@ import marketplace.impl.OrderImpl;
 
 import java.math.BigDecimal;
 
+/**
+ * With this singleton factory class you can create an order board instance and create orders
+ */
 public enum OrderBoardFactory {
     INSTANCE;
 

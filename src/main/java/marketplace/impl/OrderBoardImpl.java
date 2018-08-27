@@ -6,10 +6,7 @@ import marketplace.OrderBook;
 import marketplace.OrderType;
 
 import java.math.BigDecimal;
-import java.util.Map;
-import java.util.NavigableMap;
-import java.util.Queue;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -43,9 +40,19 @@ public class OrderBoardImpl implements OrderBoard {
     }
 
     @Override
-    public String getSummary() {
+    public String getOrderBookSummary() {
         OrderBook orderBook = getOrderBook();
-        return orderBook.getBuyOrderSummary() + orderBook.getSellOrderSummary();
+        SortedMap<BigDecimal, BigDecimal> price2TotalQtyBuyOrders = orderBook.getPrice2TotalQtyBuyOrders();
+        SortedMap<BigDecimal, BigDecimal> price2TotalQtySellOrders = orderBook.getPrice2TotalQtySellOrders();
+        return "BUY:\n" + getOrderSummary(price2TotalQtyBuyOrders) + "SELL:\n" + getOrderSummary(price2TotalQtySellOrders);
+    }
+
+    private String getOrderSummary(SortedMap<BigDecimal, BigDecimal> price2TotalQty) {
+        String summary = "";
+        for (Map.Entry<BigDecimal, BigDecimal> price2QtyEntry : price2TotalQty.entrySet()) {
+            summary += price2QtyEntry.getValue().toPlainString() + " kg for £" + price2QtyEntry.getKey().toPlainString() + "\n";
+        }
+        return summary;
     }
 
     private NavigableMap<BigDecimal, BigDecimal> getPrice2TotalQty(Stream<Order> stream, OrderType orderType) {

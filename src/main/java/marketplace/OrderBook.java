@@ -3,32 +3,21 @@ package marketplace;
 import java.math.BigDecimal;
 import java.util.SortedMap;
 
+/**
+ * An order book which holds the aggregated buy and sell orders respectively per price level
+ */
 public interface OrderBook {
     /**
-     * Get a sorted key->value map as price->total qty for buy orders sorted on descending prices (keys)
+     * Get a sorted map with prices as the map keys and the total qty as the map values for buy orders sorted on descending prices
      *
-     * @return a sorted price->total qty map
+     * @return a sorted price->total qty map for buy order sorted on descending prices
      */
     SortedMap<BigDecimal, BigDecimal> getPrice2TotalQtyBuyOrders();
 
     /**
-     * Get a sorted key->value map as price->total qty for sell orders sorted on ascending prices (keys)
+     * Get a sorted map with prices as the map keys and the total qty as the map values for sell orders sorted on ascending prices
      *
-     * @return a sorted price->total qty map
+     * @return a sorted price->total qty map for sell order sorted on ascending prices
      */
     SortedMap<BigDecimal, BigDecimal> getPrice2TotalQtySellOrders();
-
-    /**
-     * Get a summary of the orderbook as a string for buy orders
-     *
-     * @return a summary of the orderbook as a string for buy orders
-     */
-    String getBuyOrderSummary();
-
-    /**
-     * Get a summary of the orderbook as a string for sell orders
-     *
-     * @return a summary of the orderbook as a string for sell orders
-     */
-    String getSellOrderSummary();
 }

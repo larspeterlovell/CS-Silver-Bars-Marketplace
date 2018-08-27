@@ -167,7 +167,7 @@ public class OrderBoardImplTest {
                 "5.5 kg for £301\n" +
                 "3.0 kg for £303\n" +
                 "7.5 kg for £306\n";
-        assertEquals(EXP_SUMMARY, orderBoard.getSummary());
+        assertEquals(EXP_SUMMARY, orderBoard.getOrderBookSummary());
     }
 
     private Order createBulkOrder(OrderType orderType, int no) {
