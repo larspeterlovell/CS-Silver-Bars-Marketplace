@@ -16,8 +16,8 @@ public class OrderImpl implements Order {
      * Order constructor
      *
      * @param orderType
-     * @param price, only non zero positive prices are allowed
-     * @param qty, only non zero positive quantities are allowed
+     * @param price in £/kg, only non zero positive prices are allowed
+     * @param qty in kg, only non zero positive quantities are allowed
      * @param userId
      * @return Order
      * @throws IllegalArgumentException for any invalid order parameters
@@ -54,13 +54,13 @@ public class OrderImpl implements Order {
         if (orderType == null) {
             throw new IllegalArgumentException("The order type is null");
         }
-        // Only non zero positive prices allowed
+        // Only prices > 0 is allowed
         if (price.signum() != 1) {
-            throw new IllegalArgumentException("The order price " + price + " is invalid");
+            throw new IllegalArgumentException("The order price " + price + " is negative or zero");
         }
-        // Only non zero positive quantites allowed
+        // Only quantites > 0 is allowed
         if (qty.signum() != 1) {
-            throw new IllegalArgumentException("The order quantity " + qty + " is invalid");
+            throw new IllegalArgumentException("The order quantity " + qty + " is negative or zero");
         }
     }
 

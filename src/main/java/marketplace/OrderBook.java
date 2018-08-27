@@ -8,14 +8,14 @@ import java.util.SortedMap;
  */
 public interface OrderBook {
     /**
-     * Get a sorted map with prices as the map keys and the total qty as the map values for buy orders sorted on descending prices
+     * Get a sorted map with prices in £/kg as the map keys and the total qty in kg as the map values for buy orders sorted on descending prices
      *
      * @return a sorted price->total qty map for buy order sorted on descending prices
      */
     SortedMap<BigDecimal, BigDecimal> getPrice2TotalQtyBuyOrders();
 
     /**
-     * Get a sorted map with prices as the map keys and the total qty as the map values for sell orders sorted on ascending prices
+     * Get a sorted map with prices in £/kg as the map keys and the total qty in kg as the map values for sell orders sorted on ascending prices
      *
      * @return a sorted price->total qty map for sell order sorted on ascending prices
      */

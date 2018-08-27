@@ -4,23 +4,23 @@ import java.math.BigDecimal;
 
 public interface Order {
     /**
-     * Get the order type of the order
+     * Get the order type BUY or SELL
      *
      * @return OrderType
      */
     OrderType getOrderType();
 
     /**
-     * Get the price of the order
+     * Get the order price in £/kg
      *
-     * @return BigDecimal
+     * @return The price in £/kg as a BigDecimal
      */
     BigDecimal getPrice();
 
     /**
-     * Get the quantity of the order
+     * Get the order quantity in kg
      *
-     * @return BigDecimal
+     * @return The quantity in kg as a BigDecimal
      */
     BigDecimal getQty();
 

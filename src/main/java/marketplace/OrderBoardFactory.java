@@ -6,7 +6,8 @@ import marketplace.impl.OrderImpl;
 import java.math.BigDecimal;
 
 /**
- * With this singleton factory class you can create an order board instance and create orders
+ * With this singleton factory users can create an instance of an order board. Users can also create orders which
+ * can be registered and cancelled to and from the order board.
  */
 public enum OrderBoardFactory {
     INSTANCE;
@@ -24,8 +25,8 @@ public enum OrderBoardFactory {
      * Create an instance of an order
      *
      * @param orderType
-     * @param price, only non zero positive prices are allowed
-     * @param qty, only non zero positive quantities are allowed
+     * @param price in £/kg, only non zero positive prices are allowed
+     * @param qty in kg, only non zero positive quantities are allowed
      * @param userId
      * @return Order
      * @throws IllegalArgumentException for any invalid order parameters
