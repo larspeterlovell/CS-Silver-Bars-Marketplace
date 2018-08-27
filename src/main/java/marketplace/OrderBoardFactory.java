@@ -23,7 +23,12 @@ public enum OrderBoardFactory {
     /**
      * Create an instance of an order
      *
+     * @param orderType
+     * @param price, only non zero positive prices are allowed
+     * @param qty, only non zero positive quantities are allowed
+     * @param userId
      * @return Order
+     * @throws IllegalArgumentException for any invalid order parameters
      */
     public Order createOrder(OrderType orderType, BigDecimal price, BigDecimal qty, String userId) {
         return new OrderImpl(orderType, price, qty, userId);

@@ -10,6 +10,7 @@ public interface OrderBoard {
      * Register an order to the order board
      *
      * @param order
+     * @throws IllegalArgumentException if the order is null
      */
     void registerOrder(Order order);
 
@@ -18,6 +19,7 @@ public interface OrderBoard {
      *
      * @param order
      * @return true if order existed on the order board and it was cancelled, false otherwise
+     * @throws IllegalArgumentException if the order is null
      */
     boolean cancelOrder(Order order);
 

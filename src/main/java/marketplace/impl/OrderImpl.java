@@ -12,11 +12,22 @@ public class OrderImpl implements Order {
     private final BigDecimal qty;
     private final String userId;
 
+    /**
+     * Order constructor
+     *
+     * @param orderType
+     * @param price, only non zero positive prices are allowed
+     * @param qty, only non zero positive quantities are allowed
+     * @param userId
+     * @return Order
+     * @throws IllegalArgumentException for any invalid order parameters
+     */
     public OrderImpl(OrderType orderType, BigDecimal price, BigDecimal qty, String userId) {
         this.orderType = orderType;
         this.price = price;
         this.qty = qty;
         this.userId = userId;
+        validate();
     }
 
     @Override
@@ -37,6 +48,20 @@ public class OrderImpl implements Order {
     @Override
     public String getUserId() {
         return userId;
+    }
+
+    private void validate() {
+        if (orderType == null) {
+            throw new IllegalArgumentException("The order type is null");
+        }
+        // Only non zero positive prices allowed
+        if (price.signum() != 1) {
+            throw new IllegalArgumentException("The order price " + price + " is invalid");
+        }
+        // Only non zero positive quantites allowed
+        if (qty.signum() != 1) {
+            throw new IllegalArgumentException("The order quantity " + qty + " is invalid");
+        }
     }
 
     @Override

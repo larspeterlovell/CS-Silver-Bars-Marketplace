@@ -18,7 +18,7 @@ public class OrderBoardImpl implements OrderBoard {
     @Override
     public void registerOrder(Order order) {
         if (order == null) {
-            throw new IllegalArgumentException("Input order is null when registering order");
+            throw new IllegalArgumentException("The order is null");
         }
         orders.add(order);
     }
@@ -26,7 +26,7 @@ public class OrderBoardImpl implements OrderBoard {
     @Override
     public boolean cancelOrder(Order order) {
         if (order == null) {
-            throw new IllegalArgumentException("Input order is null when cancelling order");
+            throw new IllegalArgumentException("The order is null");
         }
         return orders.remove(order);
     }
