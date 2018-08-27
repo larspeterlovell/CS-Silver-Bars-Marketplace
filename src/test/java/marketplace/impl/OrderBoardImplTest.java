@@ -151,7 +151,7 @@ public class OrderBoardImplTest {
     }
 
     @Test
-    public void testGetSummary() {
+    public void testGetOrderBookSummary() {
         orderBoard.registerOrder(new OrderImpl(OrderType.BUY, new BigDecimal("303"), new BigDecimal("3.5"), "userId1"));
         orderBoard.registerOrder(new OrderImpl(OrderType.SELL, new BigDecimal("306"), new BigDecimal("7.5"), "userId2"));
         orderBoard.registerOrder(new OrderImpl(OrderType.BUY, new BigDecimal("303"), new BigDecimal("3.0"), "userId3"));
